@@ -1,0 +1,12 @@
+FROM python:3.5
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir /macdash
+RUN git clone https://github.com/MacDash/MacDash.git /macdash
+
+COPY ./compose/start-dev.sh /start-dev.sh
+RUN chmod +x /start-dev.sh
+
+RUN pip install -r /macdash/requirements.txt
+
+WORKDIR /macdash

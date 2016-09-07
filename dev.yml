@@ -1,0 +1,25 @@
+version: '2'
+services:
+  db:
+    image: postgres
+  macdash:
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile-dev
+    command: /start-dev.sh
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD:  postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB_NAME: postgres
+      DEBUG: 'true'
+    env_file: .env
+    volumes:
+      - ./MacDash:/macdash
+    ports:
+      - "8000:8000"
+    links:
+      - db

@@ -1,0 +1,38 @@
+version: '2'
+services:
+  db:
+    image: postgres
+  macdash:
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile
+    command: /macdash/start-prod.sh
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD:  postgres
+      POSTGRES_PORT: 5432
+      DEBUG: 'true'
+    env_file: .env
+    volumes:
+      - /usr/src/app/
+      - /usr/src/app/static
+    expose:
+      - "8000"
+      - "5555"
+    links:
+      - db
+  nginx:
+    restart: always
+    build: ./compose/nginx/
+    ports: 
+      - "80:80"
+      - "5555:5555"
+    volumes:
+      - /www/static
+    volumes_from:
+      - macdash
+    links:
+      - macdash:macdash
